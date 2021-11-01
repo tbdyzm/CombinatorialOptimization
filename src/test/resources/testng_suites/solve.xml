@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite verbose="1" name="Solve Tests" parallel="methods" thread-count="5">
+
+    <test name="User API tests">
+        <classes>
+            <class name="com.longmao.solve.BranchAndBoundTest" />
+            <class name="com.longmao.solve.CuttingPlaneTest" />
+            <class name="com.longmao.solve.DualSimplexMethodTest" />
+            <class name="com.longmao.solve.SimpleMethodTest" />
+        </classes>
+    </test>
+
+</suite>

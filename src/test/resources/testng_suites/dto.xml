@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite verbose="1" name="Solve Tests" parallel="methods" thread-count="5">
+
+    <test name="User API tests">
+        <classes>
+            <class name="com.longmao.dto.FractionTest" />
+        </classes>
+    </test>
+
+</suite>
