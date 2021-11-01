@@ -1,4 +1,4 @@
-package com.longmao.dto;
+package com.longmao.enums;
 
 public enum CONSTRAINT {
     GREATER_THAN_OR_EQUAL_TO_ZERO("greater_than_or_equal_to_zero"),

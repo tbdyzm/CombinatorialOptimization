@@ -1,4 +1,4 @@
-package com.longmao.dto;
+package com.longmao.enums;
 
 public enum OBJECTIVE {
     MAX("max"),

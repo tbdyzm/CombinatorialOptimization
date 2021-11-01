@@ -2,154 +2,90 @@ package com.longmao.solve;
 
 import com.longmao.dto.*;
 import com.longmao.model.IntegerLinearProgramming;
+import com.qaprosoft.carina.core.foundation.IAbstractTest;
+import com.qaprosoft.carina.core.foundation.dataprovider.annotations.XlsDataSourceParameters;
 import org.testng.Assert;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 
 /**
- * @Description TODO
+ * @Description 割平面法单元测试
  * @Author zimu young
  * Date 2021/8/4 15:45
  * Version 1.0
  **/
-public class CuttingPlaneTest {
-    @Test
-    public void testCuttingPlanePipelineV1(){
-        int variableCount = 2, equationCount = 3;
+public class CuttingPlaneTest implements IAbstractTest {
+    DataToEntity dataToEntity;
 
-        String[] valueCoefficientsNumerator = {"1", "5"};
-        String[] valueCoefficientsDenominator = {"1", "1"};
-        String[][] coefficientMatrixNumerator = {{"1", "-1"}, {"5", "6"}, {"1", "0"}};
-        String[][] coefficientMatrixDenominator = {{"1", "1"}, {"1", "1"}, {"1", "1"}};
-        String[] bVectorNumerator = {"-2", "30", "4"};
-        String[] bVectorDenominator = {"1", "1", "1"};
+    @BeforeTest
+    public void initialize(){
+        dataToEntity = new DataToEntity();
+    }
 
-        Fraction[] valueCoefficients = new Fraction[variableCount];
-        for (int i = 0; i < valueCoefficients.length; i++){
-            valueCoefficients[i] = new Fraction();
-            valueCoefficients[i].setNumerator(new BigInteger(valueCoefficientsNumerator[i]));
-            valueCoefficients[i].setDenominator(new BigInteger(valueCoefficientsDenominator[i]));
-        }
+    @Test(dataProvider = "DataProvider")
+    @XlsDataSourceParameters(path = "xls/solve/CuttingPlane.xlsx", sheet = "CuttingPlane", dsArgs = "c,a,b,e,o,vc,integer,objectiveValue,expectX")
+    public void testCuttingPlanePipelineV1(String c, String a, String b, String e, String o, String vc, String integer, String objectiveValue,
+                                           String expectX){
 
-        Fraction[][] coefficientMatrix = new Fraction[equationCount][];
-        for (int i = 0; i < coefficientMatrix.length; i++){
-            coefficientMatrix[i] = new Fraction[variableCount];
-            for (int j = 0; j < coefficientMatrix[i].length; j++){
-                coefficientMatrix[i][j] = new Fraction();
-                coefficientMatrix[i][j].setNumerator(new BigInteger(coefficientMatrixNumerator[i][j]));
-                coefficientMatrix[i][j].setDenominator(new BigInteger(coefficientMatrixDenominator[i][j]));
-            }
-        }
+        IntegerLinearProgramming integerLinearProgramming = dataToEntity.dataToLinearProgrammingV2(c, a, b, e, o, vc, integer);
 
-        Fraction[] bVector = new Fraction[equationCount];
-        for (int i = 0; i < bVector.length; i++){
-            bVector[i] = new Fraction();
-            bVector[i].setNumerator(new BigInteger(bVectorNumerator[i]));
-            bVector[i].setDenominator(new BigInteger(bVectorDenominator[i]));
-        }
-
-        EQUATION[] equations = new EQUATION[equationCount];
-        equations[0] = EQUATION.GREATER_THAN_OR_EQUAL;
-        equations[1] = EQUATION.LESS_THAN_OR_EQUAL;
-        equations[2] = EQUATION.LESS_THAN_OR_EQUAL;
-
-        OBJECTIVE objective = OBJECTIVE.MAX;
-
-        CONSTRAINT[] constraints = new CONSTRAINT[variableCount];
-        Arrays.fill(constraints, CONSTRAINT.GREATER_THAN_OR_EQUAL_TO_ZERO);
-
-        boolean[] isInteger = new boolean[variableCount];
-        for (int i = 0; i < variableCount; i++){
-            isInteger[i] = true;
-        }
-
-        IntegerLinearProgramming integerLinearProgramming = new IntegerLinearProgramming();
-        integerLinearProgramming.setValueCoefficients(valueCoefficients);
-        integerLinearProgramming.setCoefficientMatrix(coefficientMatrix);
-        integerLinearProgramming.setEquations(equations);
-        integerLinearProgramming.setBVector(bVector);
-        integerLinearProgramming.setObjective(objective);
-        integerLinearProgramming.setConstraints(constraints);
-        integerLinearProgramming.setIsInteger(isInteger);
+        String[] objectiveValueFraction = objectiveValue.split("/");
+        String[] dataVariables = expectX.split(",");
 
         CuttingPlane cuttingPlane = new CuttingPlane();
         Solution solution = cuttingPlane.cuttingPlanePipelineV1(integerLinearProgramming);
-        Assert.assertEquals(solution.getObjectiveValue().getNumerator(), new BigInteger("17"));
-        Assert.assertEquals(solution.getObjectiveValue().getDenominator(), BigInteger.ONE);
-        Assert.assertEquals(solution.getOptimalSolution()[0].getNumerator(), new BigInteger("2"));
-        Assert.assertEquals(solution.getOptimalSolution()[0].getDenominator(), BigInteger.ONE);
-        Assert.assertEquals(solution.getOptimalSolution()[1].getNumerator(), new BigInteger("3"));
-        Assert.assertEquals(solution.getOptimalSolution()[1].getDenominator(), BigInteger.ONE);
-    }
 
-    @Test
-    public void testCuttingPlanePipelineV2(){
-        int variableCount = 2, equationCount = 2;
-
-        String[] valueCoefficientsNumerator = {"3", "2"};
-        String[] valueCoefficientsDenominator = {"1", "1"};
-        String[][] coefficientMatrixNumerator = {{"2", "3"}, {"1", "1"}};
-        String[][] coefficientMatrixDenominator = {{"1", "1"}, {"1", "2"}};
-        String[] bVectorNumerator = {"14", "9"};
-        String[] bVectorDenominator = {"1", "2"};
-
-        Fraction[] valueCoefficients = new Fraction[variableCount];
-        for (int i = 0; i < valueCoefficients.length; i++){
-            valueCoefficients[i] = new Fraction();
-            valueCoefficients[i].setNumerator(new BigInteger(valueCoefficientsNumerator[i]));
-            valueCoefficients[i].setDenominator(new BigInteger(valueCoefficientsDenominator[i]));
+        if (objectiveValueFraction.length == 2) {
+            Assert.assertEquals(solution.getObjectiveValue().getNumerator(), new BigInteger(objectiveValueFraction[0]));
+            Assert.assertEquals(solution.getObjectiveValue().getDenominator(), new BigInteger(objectiveValueFraction[1]));
         }
-
-        Fraction[][] coefficientMatrix = new Fraction[equationCount][];
-        for (int i = 0; i < coefficientMatrix.length; i++){
-            coefficientMatrix[i] = new Fraction[variableCount];
-            for (int j = 0; j < coefficientMatrix[i].length; j++){
-                coefficientMatrix[i][j] = new Fraction();
-                coefficientMatrix[i][j].setNumerator(new BigInteger(coefficientMatrixNumerator[i][j]));
-                coefficientMatrix[i][j].setDenominator(new BigInteger(coefficientMatrixDenominator[i][j]));
+        else {
+            Assert.assertEquals(solution.getObjectiveValue().getNumerator(), new BigInteger(objectiveValueFraction[0]));
+        }
+        Assert.assertEquals(solution.getOptimalSolution().length, dataVariables.length);
+        for (int i = 0; i < dataVariables.length; i++){
+            String[] dataFraction = dataVariables[i].split("/");
+            if (dataFraction.length == 2){
+                Assert.assertEquals(solution.getOptimalSolution()[i].getNumerator(), new BigInteger(dataFraction[0]));
+                Assert.assertEquals(solution.getOptimalSolution()[i].getDenominator(), new BigInteger(dataFraction[1]));
+            }
+            else {
+                Assert.assertEquals(solution.getOptimalSolution()[i].getNumerator(), new BigInteger(dataFraction[0]));
             }
         }
+    }
 
-        Fraction[] bVector = new Fraction[equationCount];
-        for (int i = 0; i < bVector.length; i++){
-            bVector[i] = new Fraction();
-            bVector[i].setNumerator(new BigInteger(bVectorNumerator[i]));
-            bVector[i].setDenominator(new BigInteger(bVectorDenominator[i]));
-        }
+    @Test(dataProvider = "DataProvider")
+    @XlsDataSourceParameters(path = "xls/solve/CuttingPlane.xlsx", sheet = "CuttingPlane", dsArgs = "c,a,b,e,o,vc,integer,objectiveValue,expectX")
+    public void testCuttingPlanePipelineV2(String c, String a, String b, String e, String o, String vc, String integer, String objectiveValue,
+                                           String expectX){
+        IntegerLinearProgramming integerLinearProgramming = dataToEntity.dataToLinearProgrammingV2(c, a, b, e, o, vc, integer);
 
-        EQUATION[] equations = new EQUATION[equationCount];
-        equations[0] = EQUATION.LESS_THAN_OR_EQUAL;
-        equations[1] = EQUATION.LESS_THAN_OR_EQUAL;
-
-        OBJECTIVE objective = OBJECTIVE.MAX;
-
-        CONSTRAINT[] constraints = new CONSTRAINT[variableCount];
-        Arrays.fill(constraints, CONSTRAINT.GREATER_THAN_OR_EQUAL_TO_ZERO);
-
-        boolean[] isInteger = new boolean[variableCount];
-        for (int i = 0; i < variableCount; i++){
-            isInteger[i] = true;
-        }
-        isInteger[0] = false;
-
-        IntegerLinearProgramming integerLinearProgramming = new IntegerLinearProgramming();
-        integerLinearProgramming.setValueCoefficients(valueCoefficients);
-        integerLinearProgramming.setCoefficientMatrix(coefficientMatrix);
-        integerLinearProgramming.setEquations(equations);
-        integerLinearProgramming.setBVector(bVector);
-        integerLinearProgramming.setObjective(objective);
-        integerLinearProgramming.setConstraints(constraints);
-        integerLinearProgramming.setIsInteger(isInteger);
+        String[] objectiveValueFraction = objectiveValue.split("/");
+        String[] dataVariables = expectX.split(",");
 
         CuttingPlane cuttingPlane = new CuttingPlane();
-        Solution solution = cuttingPlane.cuttingPlanePipelineV2(integerLinearProgramming);
-        Assert.assertEquals(solution.getObjectiveValue().getNumerator(), new BigInteger("29"));
-        Assert.assertEquals(solution.getObjectiveValue().getDenominator(), new BigInteger("2"));
-        Assert.assertEquals(solution.getOptimalSolution()[0].getNumerator(), new BigInteger("7"));
-        Assert.assertEquals(solution.getOptimalSolution()[0].getDenominator(), new BigInteger("2"));
-        Assert.assertEquals(solution.getOptimalSolution()[1].getNumerator(), new BigInteger("2"));
-        Assert.assertEquals(solution.getOptimalSolution()[1].getDenominator(), BigInteger.ONE);
+        Solution solution = cuttingPlane.cuttingPlanePipelineV1(integerLinearProgramming);
+
+        if (objectiveValueFraction.length == 2) {
+            Assert.assertEquals(solution.getObjectiveValue().getNumerator(), new BigInteger(objectiveValueFraction[0]));
+            Assert.assertEquals(solution.getObjectiveValue().getDenominator(), new BigInteger(objectiveValueFraction[1]));
+        }
+        else {
+            Assert.assertEquals(solution.getObjectiveValue().getNumerator(), new BigInteger(objectiveValueFraction[0]));
+        }
+        Assert.assertEquals(solution.getOptimalSolution().length, dataVariables.length);
+        for (int i = 0; i < dataVariables.length; i++){
+            String[] dataFraction = dataVariables[i].split("/");
+            if (dataFraction.length == 2){
+                Assert.assertEquals(solution.getOptimalSolution()[i].getNumerator(), new BigInteger(dataFraction[0]));
+                Assert.assertEquals(solution.getOptimalSolution()[i].getDenominator(), new BigInteger(dataFraction[1]));
+            }
+            else {
+                Assert.assertEquals(solution.getOptimalSolution()[i].getNumerator(), new BigInteger(dataFraction[0]));
+            }
+        }
     }
 }

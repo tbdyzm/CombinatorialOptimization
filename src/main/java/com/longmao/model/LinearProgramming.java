@@ -1,19 +1,16 @@
 package com.longmao.model;
 
-import com.longmao.dto.CONSTRAINT;
-import com.longmao.dto.EQUATION;
+import com.longmao.enums.CONSTRAINT;
+import com.longmao.enums.EQUATION;
 import com.longmao.dto.Fraction;
-import com.longmao.dto.OBJECTIVE;
+import com.longmao.enums.OBJECTIVE;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.TreeMap;
 
 /**
- * @Description TODO
+ * @Description 线性规划模型
  * @Author zimu young
  * Date 2021/7/14 21:14
  * Version 1.0

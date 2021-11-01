@@ -1,4 +1,4 @@
-package com.longmao.dto;
+package com.longmao.enums;
 
 public enum EQUATION {
     GREATER_THAN_OR_EQUAL("greater_than_or_equal"),

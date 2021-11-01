@@ -1,16 +1,16 @@
 package com.longmao.utils;
 
-import com.longmao.dto.CONSTRAINT;
-import com.longmao.dto.EQUATION;
+import com.longmao.enums.CONSTRAINT;
+import com.longmao.enums.EQUATION;
 import com.longmao.dto.Fraction;
-import com.longmao.dto.OBJECTIVE;
+import com.longmao.enums.OBJECTIVE;
 import com.longmao.model.LinearProgramming;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.math.BigInteger;
 
 /**
- * @Description TODO
+ * @Description 标准化线性规划模型(包括标准化目标函数,, 不等式和变量)
  * @Author zimu young
  * Date 2021/7/18 22:53
  * Version 1.0
@@ -159,7 +159,7 @@ public class StandardizeLinearProgramming {
     public void standardizeEquationsDual(){
         int row = this.linearProgramming.getCoefficientMatrix().length;
         int col = this.linearProgramming.getCoefficientMatrix()[0].length;
-        int colCount = 0;
+        int colCount;
         int i, j;
 
         // 如果不等号为>=, 不等式左右两边乘-1, 不等号反向
