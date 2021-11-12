@@ -359,6 +359,7 @@ public class HungarianAlgorithm {
             // 效率矩阵根据min值变换, 重新计算最大匹配
             this.efficiencyMatrixTransformation(min);
         }
+        System.out.println(this.optimalMatching);
 
         Map<String, String> solution = new LinkedHashMap<>();
         // 匹配工作和工人
@@ -372,10 +373,11 @@ public class HungarianAlgorithm {
                 // 工作不可剩余时, 尝试分配给工作时间最短的工人
                 else {
                     double minEfficiency = -1;
-                    for (int j = 0; j < works; j++){
+                    // 不可将工作分配给不存在的工人, 即this.optimalMatching.getMappingWorker()[j]=-1的工人
+                    for (int j = 0; j < works && this.optimalMatching.getMappingWorker()[j] != -1; j++){
                         double efficiency = this.optimalMatching.getEfficiencyMatrix()[j][i];
-                        // 不可将工作分配给不存在的工人, 即mappingWorker=-1(j != this.optimalMatching.getMatchedWork()[i]), 工作也不可以分配给不做该工作的工人
-                        if (minEfficiency == -1 || efficiency < minEfficiency && efficiency != -1 && j != this.optimalMatching.getMatchedWork()[i]){
+                        // 工作也不可以分配给不做该工作的工人
+                        if ((minEfficiency == -1 || efficiency < minEfficiency) && efficiency != -1){
                             minEfficiency = efficiency;
                             worker_idx = this.optimalMatching.getMappingWorker()[j];
                         }
