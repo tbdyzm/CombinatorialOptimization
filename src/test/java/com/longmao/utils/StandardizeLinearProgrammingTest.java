@@ -1,7 +1,6 @@
 package com.longmao.utils;
 
 import com.longmao.model.LinearProgramming;
-import com.longmao.solve.DataToEntity;
 import com.qaprosoft.carina.core.foundation.IAbstractTest;
 import com.qaprosoft.carina.core.foundation.dataprovider.annotations.XlsDataSourceParameters;
 import org.testng.Assert;
@@ -25,7 +24,7 @@ public class StandardizeLinearProgrammingTest implements IAbstractTest {
     }
 
     @Test(dataProvider = "DataProvider")
-    @XlsDataSourceParameters(path = "xls/solve/StandardizeLinearProgramming.xlsx", sheet = "StandardizeLinearProgrammingV1", dsArgs = "c,a,b,e,o,vc,expectC,expectA,expectB")
+    @XlsDataSourceParameters(path = "xls/utils/StandardizeLinearProgramming.xlsx", sheet = "StandardizeLinearProgrammingV1", dsArgs = "c,a,b,e,o,vc,expectC,expectA,expectB")
     public void testStandardizeLinearProgrammingV1(String c, String a, String b, String e, String o, String vc, String expectC, String expectA, String expectB){
         LinearProgramming linearProgramming = dataToEntity.dataToLinearProgrammingV1(c, a, b, e, o, vc);
 
@@ -79,7 +78,7 @@ public class StandardizeLinearProgrammingTest implements IAbstractTest {
     }
 
     @Test(dataProvider = "DataProvider")
-    @XlsDataSourceParameters(path = "xls/solve/StandardizeLinearProgramming.xlsx", sheet = "StandardizeLinearProgrammingV2", dsArgs = "c,a,b,e,o,vc,expectC,expectA,expectB")
+    @XlsDataSourceParameters(path = "xls/utils/StandardizeLinearProgramming.xlsx", sheet = "StandardizeLinearProgrammingV2", dsArgs = "c,a,b,e,o,vc,expectC,expectA,expectB")
     public void testStandardizeLinearProgrammingV2(String c, String a, String b, String e, String o, String vc, String expectC, String expectA, String expectB){
         LinearProgramming linearProgramming = dataToEntity.dataToLinearProgrammingV1(c, a, b, e, o, vc);
 

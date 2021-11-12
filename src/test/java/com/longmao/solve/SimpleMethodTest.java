@@ -6,6 +6,7 @@ import com.longmao.enums.EQUATION;
 import com.longmao.enums.OBJECTIVE;
 import com.longmao.model.LinearProgramming;
 import com.longmao.model.SimplexTable;
+import com.longmao.utils.DataToEntity;
 import com.longmao.utils.StandardizeLinearProgramming;
 import com.qaprosoft.carina.core.foundation.IAbstractTest;
 import com.qaprosoft.carina.core.foundation.dataprovider.annotations.XlsDataSourceParameters;

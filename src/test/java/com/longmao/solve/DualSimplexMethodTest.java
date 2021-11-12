@@ -2,6 +2,7 @@ package com.longmao.solve;
 
 import com.longmao.dto.*;
 import com.longmao.model.LinearProgramming;
+import com.longmao.utils.DataToEntity;
 import com.qaprosoft.carina.core.foundation.IAbstractTest;
 import com.qaprosoft.carina.core.foundation.dataprovider.annotations.XlsDataSourceParameters;
 import org.testng.Assert;

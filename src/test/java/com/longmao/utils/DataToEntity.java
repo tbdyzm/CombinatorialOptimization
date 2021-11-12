@@ -1,4 +1,4 @@
-package com.longmao.solve;
+package com.longmao.utils;
 
 import com.longmao.dto.Fraction;
 import com.longmao.enums.CONSTRAINT;
@@ -6,8 +6,10 @@ import com.longmao.enums.EQUATION;
 import com.longmao.enums.OBJECTIVE;
 import com.longmao.model.IntegerLinearProgramming;
 import com.longmao.model.LinearProgramming;
+import com.longmao.model.OptimalMatching;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 /**
  * @Description Excel数据转线性规划对象
@@ -227,5 +229,28 @@ public class DataToEntity {
         integerLinearProgramming.setIsInteger(isInteger);
 
         return integerLinearProgramming;
+    }
+
+    public OptimalMatching dataToOptimalMatching(String workers, String wc, String works, String em, String objective, String rw){
+        OptimalMatching optimalMatching = new OptimalMatching();
+
+        optimalMatching.setWorker(workers.split(","));
+        optimalMatching.setWorkerCapacities(Arrays.stream(wc.split(",")).mapToInt(Integer::parseInt).toArray());
+        optimalMatching.setWork(works.split(","));
+        String[] efficiencyMatrixRow = em.split(";");
+        double[][] efficiencyMatrix = new double[efficiencyMatrixRow.length][];
+        for (int i = 0; i < efficiencyMatrixRow.length; i++){
+            efficiencyMatrix[i] = Arrays.stream(efficiencyMatrixRow[i].split(",")).mapToDouble(Double::parseDouble).toArray();
+        }
+        optimalMatching.setEfficiencyMatrix(efficiencyMatrix);
+        optimalMatching.setEfficiencyMatrix(efficiencyMatrix);
+        if ("-1".equals(objective)) {
+            optimalMatching.setObjective(OBJECTIVE.MIN);
+        }
+        else
+            optimalMatching.setObjective(OBJECTIVE.MAX);
+        optimalMatching.setRemainWork("1".equals(rw));
+
+        return optimalMatching;
     }
 }
