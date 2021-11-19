@@ -49,6 +49,27 @@ public class StandardizeOptimalMatching {
         }
     }
 
+    public void standardizeObjectiveKM(){
+        if (this.optimalMatching.getObjective().equals(OBJECTIVE.MIN)){
+            this.optimalMatching.setObjective(OBJECTIVE.MAX);
+            double max = 0.0;
+            for (int i = 0; i< this.optimalMatching.getWorker().length; i++){
+                for ( int j =0; j < this.optimalMatching.getWork().length; j++){
+                    if (this.optimalMatching.getEfficiencyMatrix()[i][j] > max){
+                        max = this.optimalMatching.getEfficiencyMatrix()[i][j];
+                    }
+                }
+            }
+            for (int i = 0; i< this.optimalMatching.getWorker().length; i++){
+                for ( int j =0; j < this.optimalMatching.getWork().length; j++){
+                    if (this.optimalMatching.getEfficiencyMatrix()[i][j] != -1){
+                        this.optimalMatching.getEfficiencyMatrix()[i][j] = max-this.optimalMatching.getEfficiencyMatrix()[i][j];
+                    }
+                }
+            }
+        }
+    }
+
     // 工人数与工作数不对等的时候, 根据工人容量和工作数将效率矩阵变为方阵
     public void standardizeEfficientMatrix() {
         int workers = this.optimalMatching.getWorker().length;

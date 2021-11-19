@@ -4,6 +4,8 @@ import com.longmao.enums.OBJECTIVE;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 /**
  * @Description 最优匹配的模型定义(最初是指派问题, 工人与工作之间的完美匹配), 996模式与955模式不兼容
  * @Author zimu young
@@ -12,7 +14,7 @@ import lombok.EqualsAndHashCode;
  **/
 @Data
 @EqualsAndHashCode
-public class OptimalMatching {
+public class OptimalMatching implements Serializable {
     // 工人名称
     private String[] worker;
 

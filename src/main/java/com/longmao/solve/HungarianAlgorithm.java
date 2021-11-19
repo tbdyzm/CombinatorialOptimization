@@ -143,9 +143,8 @@ public class HungarianAlgorithm {
      * @updateTime 2021/11/4 15:49
      * @throws
      */
-    public int getMaximumMatching(){
+    public int getMaximumMatching(int[][] graph){
         int works = this.optimalMatching.getWork().length;
-        int[][] graph = this.efficiencyMatrixToGraph();
         int[] matchedWork = new int[works]; // matchedWork[i]表示第i个工人分配的工作编号
         int count = 0;
         Arrays.fill(matchedWork, -1);
@@ -331,9 +330,8 @@ public class HungarianAlgorithm {
     }
 
     public Map<String, String> hungarianPipeline(OptimalMatching optimalMatching){
-        this.setOptimalMatching(optimalMatching);
         StandardizeOptimalMatching standardizeOptimalMatching = new StandardizeOptimalMatching();
-        standardizeOptimalMatching.setOptimalMatching(this.getOptimalMatching());
+        standardizeOptimalMatching.setOptimalMatching(optimalMatching);
 
         // 标准化目标函数&效率矩阵
         standardizeOptimalMatching.initializeMappingWorker();
@@ -345,9 +343,10 @@ public class HungarianAlgorithm {
         // 效率矩阵行&列变换
         this.rowTransformation();
         this.columnTransformation();
+        int[][] graph = this.efficiencyMatrixToGraph();
         int works = this.optimalMatching.getWork().length;
 
-        while (this.getMaximumMatching() < works){
+        while (this.getMaximumMatching(graph) < works){
             // 最大匹配数小于工作数时, 选择覆盖所有0元素的直线
             this.selectRowAndColumn();
             // 计算未被覆盖元素的最小值
@@ -358,8 +357,8 @@ public class HungarianAlgorithm {
             }
             // 效率矩阵根据min值变换, 重新计算最大匹配
             this.efficiencyMatrixTransformation(min);
+            graph = this.efficiencyMatrixToGraph();
         }
-        System.out.println(this.optimalMatching);
 
         Map<String, String> solution = new LinkedHashMap<>();
         // 匹配工作和工人

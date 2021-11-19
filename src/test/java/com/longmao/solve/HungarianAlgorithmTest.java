@@ -151,7 +151,8 @@ public class HungarianAlgorithmTest implements IAbstractTest {
         hungarianAlgorithm.rowTransformation();
         hungarianAlgorithm.columnTransformation();
 
-        Assert.assertEquals(hungarianAlgorithm.getMaximumMatching(), Integer.parseInt(expectMN));
+        int[][] graph = hungarianAlgorithm.efficiencyMatrixToGraph();
+        Assert.assertEquals(hungarianAlgorithm.getMaximumMatching(graph), Integer.parseInt(expectMN));
 
         int[] matchedWork = Arrays.stream(expectMatchedWork.split(",")).mapToInt(Integer::parseInt).toArray();
         for (int i = 0; i < matchedWork.length; i++){
