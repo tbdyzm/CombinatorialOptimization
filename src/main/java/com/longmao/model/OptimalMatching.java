@@ -41,6 +41,6 @@ public class OptimalMatching implements Serializable {
     // 工人名映射成对应的索引下标
     private int[] mappingWorker;
 
-    // 工作匹配的
+    // 工作匹配的工人
     private int[] matchedWork;
 }

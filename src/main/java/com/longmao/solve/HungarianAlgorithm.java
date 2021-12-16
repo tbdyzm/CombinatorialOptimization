@@ -196,90 +196,65 @@ public class HungarianAlgorithm {
         Arrays.fill(this.selectedRow, false);
         Arrays.fill(this.selectedColumn, false);
 
-        this.selected = new boolean[works][];
+        boolean[] rowChoice = new boolean[works];
+        boolean[] columnChoice = new boolean[works];
+        Arrays.fill(rowChoice, true);
+        Arrays.fill(columnChoice, false);
+
+        int worker = 0;
+        int[][] graph = new int[works][];
         for (int i = 0; i < works; i++){
-            this.selected[i] = new boolean[works];
-            Arrays.fill(this.selected[i], false);
+            graph[i] = new int[works];
+            Arrays.fill(graph[i], -1);
+        }
+        for (int i = 0; i < works; i++){
+            worker = this.optimalMatching.getMatchedWork()[i];
+            if (worker != -1){
+                graph[worker][i] = 1;
+                rowChoice[worker] = false;
+            }
+        }
+        for (int i = 0; i < works; i++){
+            for (int j = 0; j < works; j++){
+                if (this.optimalMatching.getEfficiencyMatrix()[i][j] == 0 && graph[i][j] != 1){
+                    graph[i][j] = 0;
+                }
+            }
         }
 
-        int minLineCount = 0;// 覆盖所有0元素所需最小直线数
-        for (int i = 0; i < works; i++){
-            if (this.optimalMatching.getMatchedWork()[i] != -1)
-                minLineCount++;
+        while (true){
+            boolean noColumnChoice = true;
+            // 对于选择的行, 选择行中0元素的列
+            for (int i = 0; i < works; i++){
+                if (rowChoice[i]){
+                    for (int j = 0; j < works; j++){
+                        if (graph[i][j] == 0 && !columnChoice[j]){
+                            columnChoice[j] = true;
+                            noColumnChoice = false;
+                        }
+                    }
+                }
+            }
+            if (noColumnChoice) break;
+
+            boolean noRowChoice = true;
+            // 对于选择的列, 选择列中独立0元素的行
+            for (int i = 0; i < works; i++){
+                if (columnChoice[i]){
+                    for (int j = 0; j < works; j++){
+                        if (graph[j][i] == 1 && !rowChoice[j]){
+                            rowChoice[j] = true;
+                            noRowChoice = false;
+                        }
+                    }
+                }
+            }
+            if (noRowChoice) break;
         }
 
-        // 完成minLineCount条直线的选择
-        while (minLineCount-->0){
-            int[] rowZeroCount = new int[works];
-            int[] columnZeroCount = new int[works];
-            Arrays.fill(rowZeroCount, 0);
-            Arrays.fill(columnZeroCount, 0);
-
-            // 计算每行和每列未被画线的0元素个数
-            for (int i = 0; i < works; i++){
-                for (int j = 0; j < works; j++){
-                    if (this.optimalMatching.getEfficiencyMatrix()[i][j] == 0 && !this.selected[i][j]){
-                        rowZeroCount[i]++;
-                        columnZeroCount[j]++;
-                    }
-                }
-            }
-
-            int selectedRow = -1; // 被选择的行当且仅当该行0元素个数最少
-            int selectedColumn = -1; // 被选择的列当且仅当该列的0元素最少
-            int minRowZeroCount = -1;
-            int minColumnZeroCount = -1;
-            // 计算0元素最少的行和列, 记录最小值
-            for (int i = 0; i < works; i++){
-                if ((minRowZeroCount == -1 || rowZeroCount[i] < minRowZeroCount) && rowZeroCount[i] != 0){
-                    minRowZeroCount = rowZeroCount[i];
-                    selectedRow = i;
-                }
-                if ((minColumnZeroCount == -1 || columnZeroCount[i] < minColumnZeroCount) && columnZeroCount[i] != 0){
-                    minColumnZeroCount = columnZeroCount[i];
-                    selectedColumn = i;
-                }
-            }
-            // 选择0元素最少的某行, 选择第一次出现的0元素, 并比较该0元素所在行的0元素个数和列的0元素个数, 选择尽可能多的行或列画线覆盖
-            if (minRowZeroCount <= minColumnZeroCount){
-                int column = -1;
-                for (int i = 0; i < works; i++){
-                    if (this.optimalMatching.getEfficiencyMatrix()[selectedRow][i] == 0 && !this.selected[selectedRow][i]){
-                        column = i;
-                        break;
-                    }
-                }
-                if (minRowZeroCount > countColumnZero(column)) {
-                    this.selectedRow[selectedRow] = true;
-                    Arrays.fill(this.selected[selectedRow], true);
-                }
-                else {
-                    this.selectedColumn[column] = true;
-                    for (int i = 0; i < works; i++){
-                        this.selected[i][column] = true;
-                    }
-                }
-            }
-            // 选择0元素最少的某列, 选择第一次出现的0元素, 并比较该0元素所在行的0元素个数和列的0元素个数, 选择尽可能多的行或列画线覆盖
-            else {
-                int row = -1;
-                for (int i = 0; i < works; i++){
-                    if (this.optimalMatching.getEfficiencyMatrix()[i][selectedColumn] == 0 && !this.selected[i][selectedColumn]){
-                        row = i;
-                        break;
-                    }
-                }
-                if (countRowZero(row) > minColumnZeroCount){
-                    this.selectedRow[row] = true;
-                    Arrays.fill(this.selected[row], true);
-                }
-                else {
-                    this.selectedColumn[selectedColumn] = true;
-                    for (int i = 0; i < works; i++) {
-                        this.selected[i][selectedColumn] = true;
-                    }
-                }
-            }
+        for (int i = 0; i < works; i++){
+            if (!rowChoice[i]) this.selectedRow[i] = true;
+            if (columnChoice[i]) this.selectedColumn[i] = true;
         }
     }
 

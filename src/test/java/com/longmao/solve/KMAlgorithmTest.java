@@ -27,7 +27,7 @@ public class KMAlgorithmTest implements IAbstractTest {
 
     @Test(dataProvider = "DataProvider")
     @XlsDataSourceParameters(path = "xls/solve/HungarianAlgorithm.xlsx", sheet = "HungarianPipeline", dsArgs = "workers,wc,works,em,objective,rw,expectSolution")
-    public void testHungarianPipeline(String workers, String wc, String works, String em, String objective, String rw, String expectSolution) {
+    public void testKMPipeline(String workers, String wc, String works, String em, String objective, String rw, String expectSolution) {
         OptimalMatching optimalMatching = this.dataToEntity.dataToOptimalMatching(workers, wc, works, em, objective, rw);
         OptimalMatching optimalMatchingKM = SerializationUtils.clone(optimalMatching);
 
@@ -36,11 +36,7 @@ public class KMAlgorithmTest implements IAbstractTest {
 
         KMAlgorithm kmAlgorithm = new KMAlgorithm();
         Map<String, String> solutionKM = kmAlgorithm.KMPipeline(optimalMatchingKM);
-        System.out.println(solutionKM);
 
-        if (solution == null)
-            Assert.assertEquals("", expectSolution);
-        else
-            Assert.assertEquals(solution.toString(), expectSolution);
+        Assert.assertEquals(solutionKM, solution);
     }
 }
